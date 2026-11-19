@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Warm High-Craft Tactical — dual theme.
+ * Token CSS variables are the single source of truth (dark default, light override).
+ * See SPEC §1.1 and packages/shared DESIGN_TOKENS.
+ */
+:root {
+  /* Sage Olive & Warm Clay — Dark: Deep Moss Charcoal & Muted Sage */
+  --bg-canvas: #141614;
+  --bg-surface: #1C1F1C;
+  --bg-elevated: #252925;
+  --border-subtle: #2F342F;
+  --text-primary: #F2F3F0;
+  --text-secondary: #9CA19B;
+  --accent-primary: #6B8E78;
+  --accent-secondary: #B8A48A;
+  --semantic-win: #558B6E;
+  --semantic-loss: #B85D58;
+  --semantic-warn: #C4934B;
+  --accent-contrast: #F4F5F4;
+  --accent-hover: #5B7A67;
+  --watermark-color: rgba(242, 243, 240, 0.14);
+  --grid-line: rgba(47, 52, 47, 0.55);
+  /* Channel turunan untuk Tailwind opacity modifier (rgb(var(--x-rgb) / alpha)) */
+  --bg-canvas-rgb: 20 22 20;
+  --bg-surface-rgb: 28 31 28;
+  --bg-elevated-rgb: 37 41 37;
+  --border-subtle-rgb: 47 52 47;
+  --text-primary-rgb: 242 243 240;
+  --text-secondary-rgb: 156 161 155;
+  --accent-primary-rgb: 107 142 120;
+  --accent-secondary-rgb: 184 164 138;
+  --semantic-win-rgb: 85 139 110;
+  --semantic-loss-rgb: 184 93 88;
+  --semantic-warn-rgb: 196 147 75;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  /* Sage Olive & Warm Clay — Light: Natural Off-White & Deep Forest Sage */
+  --bg-canvas: #F5F5F2;
+  --bg-surface: #EAECE7;
+  --bg-elevated: #FFFFFF;
+  --border-subtle: #D8DBD3;
+  --text-primary: #1C1F1C;
+  --text-secondary: #626861;
+  --accent-primary: #4A6B56;
+  --accent-secondary: #7D6B56;
+  --semantic-win: #3B7356;
+  --semantic-loss: #A34843;
+  --semantic-warn: #A6762E;
+  --accent-contrast: #FFFFFF;
+  --accent-hover: #3D5947;
+  --watermark-color: rgba(28, 31, 28, 0.12);
+  --grid-line: rgba(216, 219, 211, 0.7);
+  --bg-canvas-rgb: 245 245 242;
+  --bg-surface-rgb: 234 236 231;
+  --bg-elevated-rgb: 255 255 255;
+  --border-subtle-rgb: 216 219 211;
+  --text-primary-rgb: 28 31 28;
+  --text-secondary-rgb: 98 104 97;
+  --accent-primary-rgb: 74 107 86;
+  --accent-secondary-rgb: 125 107 86;
+  --semantic-win-rgb: 59 115 86;
+  --semantic-loss-rgb: 163 72 67;
+  --semantic-warn-rgb: 166 118 46;
+  color-scheme: light;
+}
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --header-height: 3.5rem;
+  --radius: 0.5rem;
+}
+
+html, body, #root { height: 100%; }
+
+@layer base {
+  * { border-color: var(--border-subtle); }
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    background-color: var(--bg-canvas);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at 10% -12%, color-mix(in srgb, var(--accent-primary) 5%, transparent), transparent 46%),
+      radial-gradient(ellipse at 92% 112%, color-mix(in srgb, var(--accent-secondary) 4%, transparent), transparent 44%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 180ms ease, color 180ms ease;
+  }
+  ::selection { background: color-mix(in srgb, var(--accent-primary) 26%, transparent); color: var(--text-primary); }
+}
+
+* { scrollbar-width: thin; scrollbar-color: var(--border-subtle) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: var(--border-subtle); border-radius: 9999px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+
+@layer components {
+  /* Asymmetric, hairline-bordered warm surfaces — no neon glow. */
+  .card {
+    @apply rounded-lg p-5;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-primary) 3%, transparent);
+  }
+  .card-hover { @apply transition-colors duration-200; }
+  .card-hover:hover { border-color: color-mix(in srgb, var(--accent-primary) 45%, var(--border-subtle)); }
+
+  .btn {
+    @apply inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none select-none;
+    height: 2rem;
+    padding: 0 0.7rem;
+    border: 1px solid transparent;
+  }
+  .btn:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 30%, transparent); }
+  .btn-sm { height: 1.75rem; padding: 0 0.6rem; font-size: 0.8rem; }
+  .btn-lg { height: 2.25rem; padding: 0 0.85rem; }
+  .btn-primary { @apply btn; color: var(--bg-canvas); background: var(--accent-primary); }
+  .btn-primary:hover { background: color-mix(in srgb, var(--accent-primary) 85%, var(--text-primary)); }
+  .btn-outline { @apply btn; background: var(--bg-surface); border-color: var(--border-subtle); color: var(--text-primary); }
+  .btn-outline:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+  .btn-ghost { @apply btn; color: var(--text-secondary); }
+  .btn-ghost:hover { color: var(--text-primary); background: var(--bg-elevated); }
+  .btn-destructive { @apply btn; color: var(--semantic-loss); background: color-mix(in srgb, var(--semantic-loss) 10%, transparent); }
+
+  /* Tombol Login — warna eksplisit kontras tinggi di kedua tema */
+  .btn-login {
+    @apply btn w-full font-semibold;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+    background: var(--accent-primary); /* #6B8E78 dark / #4A6B56 light */
+    color: var(--accent-contrast);     /* #F4F5F4 dark / #FFFFFF light */
+  }
+  .btn-login:hover { background: var(--accent-hover); color: var(--accent-contrast); }
+  .btn-login:focus-visible { box-shadow: 0 0 0 3px rgba(107, 142, 120, 0.35); }
+
+  /* Quick-fill — border & teks terbaca di dark/light */
+  .btn-quick {
+    @apply btn text-xs;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    background: var(--bg-surface);
+  }
+  .btn-quick:hover { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--bg-elevated); }
+
+  .input {
+    @apply w-full rounded-md px-3 py-2 text-sm;
+    height: 2.25rem;
+    background: var(--bg-canvas);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+  }
+  .input::placeholder { color: color-mix(in srgb, var(--text-secondary) 65%, transparent); }
+  .input:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 20%, transparent); }
+  .label { @apply block text-[11px] font-semibold uppercase tracking-[0.14em] mb-1.5; color: var(--text-secondary); }
+  .chip { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold; }
+
+  .heading { @apply font-display font-semibold tracking-tight text-balance; }
+  .muted-description { @apply mt-1 text-sm text-pretty; color: var(--text-secondary); }
+  .num { @apply font-mono tabular-nums whitespace-nowrap; }
+  .card { min-width: 0; }
+
+  /* Editorial micro-type — asimetris, bukan kartu seragam */
+  .eyebrow { @apply text-[10px] font-semibold uppercase tracking-[0.2em]; color: var(--text-secondary); }
+  .rule { height: 1px; background: var(--border-subtle); }
+  .card-editorial { border-left: 2px solid var(--accent-primary); }
+
+  /* Asymmetric editorial grid: 7/5 split on wide screens, stacked on small. */
+  .asym-grid { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 1024px) {
+    .asym-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .asym-grid > :nth-child(1) { grid-column: span 7; }
+    .asym-grid > :nth-child(2) { grid-column: span 5; }
+    .asym-grid > :nth-child(n+3) { grid-column: span 12; }
+  }
+}
+
+.strategy-shield { user-select: none; -webkit-user-select: none; }
+.strategy-shield * { user-select: none !important; -webkit-user-select: none !important; }
+
+.grid-bg {
+  background-color: var(--bg-canvas);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }

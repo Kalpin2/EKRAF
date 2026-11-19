@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: nexus-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: nexus_esports
+      MYSQL_USER: nexus
+      MYSQL_PASSWORD: nexus_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - nexus_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pnexus_secret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: nexus-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - nexus_redis_data:/data
+
+volumes:
+  nexus_mysql_data:
+  nexus_redis_data:

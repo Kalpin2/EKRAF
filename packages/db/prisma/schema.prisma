@@ -1,0 +1,535 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+enum GlobalRole {
+  ORG_ADMIN
+  TEAM_MANAGER
+  HEAD_COACH
+  ANALYST
+  PLAYER
+  FINANCE
+}
+
+enum DivisionRole {
+  HEAD_COACH
+  ANALYST
+  MANAGER
+  PLAYER
+}
+
+enum RosterStatus {
+  STARTING
+  SUBSTITUTE
+  BENCH
+  TRIAL
+  INACTIVE
+}
+
+enum MatchType {
+  SCRIM
+  OFFICIAL
+  RANKED
+}
+
+enum MatchResult {
+  WIN
+  LOSS
+  DRAW
+}
+
+enum ScenarioType {
+  ATTACK
+  DEFENSE
+  PISTOL
+  ECO
+  FORCE_BUY
+  FULL_BUY
+}
+
+enum ReadStatus {
+  UNREAD
+  READING
+  ACKNOWLEDGED
+}
+
+enum ContractStatus {
+  ACTIVE
+  TRIAL
+  LOAN
+  BENCH
+  EXPIRED
+}
+
+enum AttendanceStatus {
+  ON_TIME
+  LATE
+  EXCUSED
+  SICK
+  ABSENT
+}
+
+enum ScheduleType {
+  SCRIM
+  PRACTICE
+  VOD_REVIEW
+  TOURNAMENT
+  MEDIA_DAY
+}
+
+enum RecruitStage {
+  SCOUTING
+  CONTACTED
+  TRIAL_SCHEDULED
+  COACH_EVAL
+  OFFER
+  ACCEPTED
+  REJECTED
+}
+
+enum ActionStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+enum NotificationType {
+  SCHEDULE
+  CONTRACT
+  PLAYBOOK
+  ACTION_ITEM
+  RECRUITMENT
+  SYSTEM
+}
+
+// ---------------------------------------------------------------------------
+// Core tenant models
+// ---------------------------------------------------------------------------
+model Organization {
+  id        String   @id @default(uuid()) @db.Char(36)
+  name      String   @db.VarChar(150)
+  slug      String   @unique @db.VarChar(100)
+  tier      String   @default("STARTER") @db.VarChar(30)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  divisions     Division[]
+  users         User[]
+  auditLogs     AuditLog[]
+  notifications Notification[]
+
+  @@map("organizations")
+}
+
+model Division {
+  id         String   @id @default(uuid()) @db.Char(36)
+  orgId      String   @db.Char(36)
+  gameTitle  String   @db.VarChar(100)
+  region     String   @default("Global") @db.VarChar(50)
+  accentColor String  @default("#00E5FF") @db.VarChar(20)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  org              Organization        @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  members          DivisionMember[]
+  matches          Match[]
+  playbooks        Playbook[]
+  scheduleEvents   ScheduleEvent[]
+  recruits         RecruitCandidate[]
+  gamePatches      GamePatch[]
+
+  @@index([orgId])
+  @@map("divisions")
+}
+
+model User {
+  id           String     @id @default(uuid()) @db.Char(36)
+  orgId        String     @db.Char(36)
+  email        String     @unique @db.VarChar(190)
+  passwordHash String     @db.VarChar(255)
+  fullName     String     @db.VarChar(150)
+  ign          String     @db.VarChar(100)
+  globalRole   GlobalRole @default(PLAYER)
+  phone        String?    @db.VarChar(40)
+  country      String?    @db.VarChar(60)
+  avatarUrl    String?    @db.VarChar(500)
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  org              Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  divisionMembers  DivisionMember[]
+  playerStats      PlayerMatchStat[]
+  readReceipts     PlaybookReadReceipt[]
+  vodNotes         VodNote[]
+  assignedActions  ActionItem[]          @relation("ActionAssignee")
+  createdActions   ActionItem[]          @relation("ActionCreator")
+  contracts        Contract[]
+  legalDocuments   LegalDocument[]
+  attendances      Attendance[]
+  wellnessLogs     WellnessLog[]
+  auditLogs        AuditLog[]
+  notifications    Notification[]
+  devices          UserDevice[]
+  evaluatedRecruits RecruitCandidate[]   @relation("RecruitEvaluator")
+
+  @@index([orgId])
+  @@map("users")
+}
+
+model DivisionMember {
+  id            String       @id @default(uuid()) @db.Char(36)
+  userId        String       @db.Char(36)
+  divisionId    String       @db.Char(36)
+  divisionRole  DivisionRole @default(PLAYER)
+  rosterStatus  RosterStatus @default(BENCH)
+  primaryRole   String?      @db.VarChar(80)
+  secondaryRole String?      @db.VarChar(80)
+  agentPool     Json?
+  jerseySize    String?      @db.VarChar(20)
+  travelPref    String?      @db.VarChar(50)
+  gameAccountId String?      @db.VarChar(100)
+  joinedAt      DateTime     @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, divisionId])
+  @@index([divisionId])
+  @@map("division_members")
+}
+
+// ---------------------------------------------------------------------------
+// Matches, stats, VOD & action items
+// ---------------------------------------------------------------------------
+model Match {
+  id           String      @id @default(uuid()) @db.Char(36)
+  divisionId   String      @db.Char(36)
+  matchType    MatchType   @default(SCRIM)
+  opponentName String      @db.VarChar(150)
+  mapName      String?     @db.VarChar(100)
+  patchVersion String?     @db.VarChar(40)
+  scoreUs      Int         @default(0)
+  scoreThem    Int         @default(0)
+  result       MatchResult @default(LOSS)
+  vodUrl       String?     @db.VarChar(500)
+  notes        String?     @db.Text
+  playedAt     DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+
+  division    Division          @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  playerStats PlayerMatchStat[]
+  vodNotes    VodNote[]
+  actionItems ActionItem[]
+
+  @@index([divisionId])
+  @@index([playedAt])
+  @@map("matches")
+}
+
+model PlayerMatchStat {
+  id              String   @id @default(uuid()) @db.Char(36)
+  matchId         String   @db.Char(36)
+  userId          String   @db.Char(36)
+  characterPlayed String?  @db.VarChar(80)
+  kills           Int      @default(0)
+  deaths          Int      @default(0)
+  assists         Int      @default(0)
+  acsOrRating     Float    @default(0)
+  firstBloods     Int      @default(0)
+  objectiveControl Float   @default(0)
+  scorecard       Json?
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, userId])
+  @@index([userId])
+  @@map("player_match_stats")
+}
+
+model VodNote {
+  id              String   @id @default(uuid()) @db.Char(36)
+  matchId         String   @db.Char(36)
+  authorId        String   @db.Char(36)
+  timestampSeconds Int
+  note            String   @db.Text
+  createdAt       DateTime @default(now())
+
+  match  Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id])
+
+  @@index([matchId])
+  @@map("vod_notes")
+}
+
+model ActionItem {
+  id          String      @id @default(uuid()) @db.Char(36)
+  matchId     String      @db.Char(36)
+  assigneeId  String      @db.Char(36)
+  creatorId   String      @db.Char(36)
+  title       String      @db.VarChar(250)
+  description String?     @db.Text
+  dueDate     DateTime?
+  status      ActionStatus @default(OPEN)
+  createdAt   DateTime    @default(now())
+
+  match    Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  assignee User  @relation("ActionAssignee", fields: [assigneeId], references: [id])
+  creator  User  @relation("ActionCreator", fields: [creatorId], references: [id])
+
+  @@index([assigneeId])
+  @@index([matchId])
+  @@map("action_items")
+}
+
+// ---------------------------------------------------------------------------
+// Playbooks, anti-leak & readiness
+// ---------------------------------------------------------------------------
+model Playbook {
+  id            String       @id @default(uuid()) @db.Char(36)
+  divisionId    String       @db.Char(36)
+  mapName       String       @db.VarChar(100)
+  scenarioType  ScenarioType @default(ATTACK)
+  title         String       @db.VarChar(200)
+  description   String?      @db.Text
+  canvasData    Json?
+  patchVersion  String?      @db.VarChar(40)
+  version       Int          @default(1)
+  isArchived    Boolean      @default(false)
+  isMatchdayReady Boolean    @default(false)
+  createdBy     String       @db.Char(36)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  division     Division              @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  readReceipts PlaybookReadReceipt[]
+
+  @@index([divisionId])
+  @@map("playbooks")
+}
+
+model PlaybookReadReceipt {
+  id                  String     @id @default(uuid()) @db.Char(36)
+  playbookId          String     @db.Char(36)
+  userId              String     @db.Char(36)
+  status              ReadStatus @default(UNREAD)
+  readDurationSeconds Int        @default(0)
+  deviceFingerprint   String?    @db.VarChar(255)
+  openedAt            DateTime?
+  acknowledgedAt      DateTime?
+  updatedAt           DateTime   @updatedAt
+
+  playbook Playbook @relation(fields: [playbookId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([playbookId, userId])
+  @@index([userId])
+  @@map("playbook_read_receipts")
+}
+
+// ---------------------------------------------------------------------------
+// Contracts, legal vault & finance
+// ---------------------------------------------------------------------------
+model Contract {
+  id                    String         @id @default(uuid()) @db.Char(36)
+  userId                String         @db.Char(36)
+  status                ContractStatus @default(ACTIVE)
+  startDate             DateTime
+  endDate               DateTime
+  baseSalaryEncrypted   String?        @db.Text
+  buyoutClauseEncrypted String?        @db.Text
+  performanceBonus      Float?
+  prizePoolPercentage   Float          @default(0)
+  clubOption            Boolean        @default(false)
+  trialEndDate          DateTime?
+  documentKey           String?        @db.VarChar(255)
+  notes                 String?        @db.Text
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([endDate])
+  @@map("contracts")
+}
+
+model LegalDocument {
+  id           String   @id @default(uuid()) @db.Char(36)
+  userId       String   @db.Char(36)
+  orgId        String   @db.Char(36)
+  docType      String   @db.VarChar(50)
+  fileName     String   @db.VarChar(200)
+  mimeType     String   @db.VarChar(100)
+  encryptedData String  @db.Text
+  iv           String   @db.VarChar(64)
+  authTag      String   @db.VarChar(64)
+  uploadedBy   String   @db.Char(36)
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([orgId])
+  @@map("legal_documents")
+}
+
+// ---------------------------------------------------------------------------
+// Schedule, attendance & wellness
+// ---------------------------------------------------------------------------
+model ScheduleEvent {
+  id          String       @id @default(uuid()) @db.Char(36)
+  divisionId  String       @db.Char(36)
+  type        ScheduleType @default(PRACTICE)
+  title       String       @db.VarChar(200)
+  description String?      @db.Text
+  location    String?      @db.VarChar(150)
+  startsAt    DateTime
+  endsAt      DateTime
+  timezone    String       @default("Asia/Jakarta") @db.VarChar(60)
+  createdBy   String       @db.Char(36)
+  createdAt   DateTime     @default(now())
+
+  division   Division     @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  attendance Attendance[]
+
+  @@index([divisionId])
+  @@index([startsAt])
+  @@map("schedule_events")
+}
+
+model Attendance {
+  id        String          @id @default(uuid()) @db.Char(36)
+  eventId   String          @db.Char(36)
+  userId    String          @db.Char(36)
+  status    AttendanceStatus @default(ON_TIME)
+  lateMinutes Int           @default(0)
+  note      String?         @db.VarChar(300)
+  recordedAt DateTime       @default(now())
+
+  event ScheduleEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([userId])
+  @@map("attendance")
+}
+
+model WellnessLog {
+  id             String   @id @default(uuid()) @db.Char(36)
+  userId         String   @db.Char(36)
+  sleepHours     Float
+  fatigueLevel   Int
+  mentalReadiness Int
+  physicalIssue  String?  @db.VarChar(300)
+  note           String?  @db.Text
+  loggedAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([loggedAt])
+  @@map("wellness_logs")
+}
+
+// ---------------------------------------------------------------------------
+// Recruitment, patches, notifications & audit
+// ---------------------------------------------------------------------------
+model RecruitCandidate {
+  id           String       @id @default(uuid()) @db.Char(36)
+  divisionId   String       @db.Char(36)
+  name         String       @db.VarChar(150)
+  ign          String       @db.VarChar(100)
+  role         String?      @db.VarChar(80)
+  source       String?      @db.VarChar(120)
+  stage        RecruitStage @default(SCOUTING)
+  rating       Float?
+  evaluatorId  String?      @db.Char(36)
+  notes        String?      @db.Text
+  trialStats   Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  division  Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  evaluator User?    @relation("RecruitEvaluator", fields: [evaluatorId], references: [id])
+
+  @@index([divisionId])
+  @@map("recruit_candidates")
+}
+
+model GamePatch {
+  id         String   @id @default(uuid()) @db.Char(36)
+  divisionId String   @db.Char(36)
+  version    String   @db.VarChar(40)
+  releaseDate DateTime
+  notes      String?  @db.Text
+
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  @@index([divisionId])
+  @@map("game_patches")
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Char(36)
+  orgId     String           @db.Char(36)
+  userId    String           @db.Char(36)
+  type      NotificationType @default(SYSTEM)
+  title     String           @db.VarChar(200)
+  body      String?          @db.Text
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+/// Perangkat terdaftar untuk session & device binding akses playbook (PRD §4.3).
+model UserDevice {
+  id            String    @id @default(uuid()) @db.Char(36)
+  userId        String    @db.Char(36)
+  orgId         String    @db.Char(36)
+  label         String    @db.VarChar(100)
+  fingerprint   String    @db.VarChar(255)
+  lastSeenAt    DateTime  @default(now())
+  revokedAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fingerprint])
+  @@index([userId])
+  @@index([orgId])
+  @@map("user_devices")
+}
+
+model AuditLog {
+  id                String   @id @default(uuid()) @db.Char(36)
+  orgId             String   @db.Char(36)
+  actorUserId       String?  @db.Char(36)
+  actionType        String   @db.VarChar(80)
+  targetResource    String   @db.VarChar(200)
+  metadata          Json?
+  ipAddress         String?  @db.VarChar(64)
+  deviceFingerprint String?  @db.VarChar(255)
+  createdAt         DateTime @default(now())
+
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  actor User?        @relation(fields: [actorUserId], references: [id])
+
+  @@index([orgId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

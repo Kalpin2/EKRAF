@@ -1,0 +1,30 @@
+{
+  "name": "nexusesports-os",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "description": "NexusEsports OS — Esports Player & Coaching Management System",
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"pnpm --filter @nexus/api dev\" \"pnpm --filter @nexus/web dev\"",
+    "dev:api": "pnpm --filter @nexus/api dev",
+    "dev:web": "pnpm --filter @nexus/web dev",
+    "build": "pnpm --filter @nexus/shared build && pnpm --filter @nexus/db build && pnpm --filter @nexus/workers build && pnpm --filter @nexus/api build && pnpm --filter @nexus/web build",
+    "db:generate": "pnpm --filter @nexus/db generate",
+    "db:push": "pnpm --filter @nexus/db push",
+    "db:seed": "pnpm --filter @nexus/db seed",
+    "db:studio": "pnpm --filter @nexus/db studio",
+    "workers:dev": "pnpm --filter @nexus/workers dev",
+    "infra:up": "docker compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infra/docker-compose.yml down",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
