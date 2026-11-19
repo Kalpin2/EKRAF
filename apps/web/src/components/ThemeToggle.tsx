@@ -21,7 +21,9 @@ export function ThemeToggle({ className, compact }: { className?: string; compac
         className,
       )}
     >
-      {mode === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+      <span className={cn('inline-flex transition-transform duration-200 ease-out', mode === 'light' && 'rotate-180')}>
+        {mode === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+      </span>
       {!compact && <span>{mode === 'dark' ? 'Light' : 'Dark'}</span>}
     </button>
   );

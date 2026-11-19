@@ -73,7 +73,7 @@ export function Progress({ value, tone = 'cyan' }: { value: number; tone?: 'cyan
   const colors = { cyan: 'bg-sage', green: 'bg-victory', amber: 'bg-caution', red: 'bg-defeat' };
   return (
     <div className="w-full h-1.5 rounded-full bg-grid overflow-hidden">
-      <div className={cn('h-full rounded-full transition-all duration-500', colors[tone])} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+      <div className={cn('progress-fill h-full rounded-full transition-[width] duration-500 ease-out', colors[tone])} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
     </div>
   );
 }

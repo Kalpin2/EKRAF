@@ -38,7 +38,7 @@ function TacticalMap({ data, compact, onPick }: { data: any; compact?: boolean; 
         <path d="M66 58 L92 60 L90 90 L66 86 Z" fill="var(--bg-elevated)" stroke="var(--border-subtle)" strokeWidth="0.5" />
         <path d="M44 30 L56 30 M30 45 L30 58 M66 46 L66 58 M62 78 L66 78" stroke="var(--accent-primary)" strokeWidth="0.4" strokeDasharray="2 2" opacity="0.5" />
         {paths.map((p: any, i: number) => (
-          <line key={i} x1={p.from.x} y1={p.from.y} x2={p.to.x} y2={p.to.y} stroke={p.color || 'var(--accent-secondary)'} strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+          <line key={i} x1={p.from.x} y1={p.from.y} x2={p.to.x} y2={p.to.y} className="tactical-flow" stroke={p.color || 'var(--accent-secondary)'} strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
         ))}
         <defs>
           <marker id="arrow" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><path d="M0 0 L4 2 L0 4 Z" fill="var(--accent-secondary)" /></marker>

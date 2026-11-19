@@ -55,7 +55,7 @@ export default function PlayerDashboard() {
         }
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Sesi Hari Ini" value={counts.schedule} hint="Scrim / VOD / turnamen" icon={CalendarDays} tone="cyan" />
         <StatCard label="Playbook Belum Siap" value={counts.unreadPlaybooks} hint="Perlu dibaca & dikonfirmasi" icon={Crosshair} tone={counts.unreadPlaybooks > 0 ? 'amber' : 'green'} />
         <StatCard label="Action Item Aktif" value={counts.openActions} hint="Tugas dari coach/analyst" icon={ClipboardList} tone="violet" />
@@ -72,7 +72,7 @@ export default function PlayerDashboard() {
             {schedule.length === 0 ? (
               <Empty title="Tidak ada sesi hari ini" description="Gunakan waktu untuk review playbook atau wellness check-in." />
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {schedule.map((e: any) => {
                   const c = countdownTo(e.startsAt);
                   return (
@@ -90,7 +90,8 @@ export default function PlayerDashboard() {
                         <p className="text-xs text-muted flex items-center gap-1"><MapPin size={11} /> {e.location || 'Online'}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className={`num text-xs font-bold ${c.urgent ? 'text-defeat pulse-soft' : c.live ? 'text-caution' : 'text-sage'}`}>
+                        <p className={`num text-xs font-bold flex items-center justify-end gap-1.5 ${c.urgent ? 'text-defeat pulse-soft' : c.live ? 'text-caution' : 'text-sage'}`}>
+                          {(c.live || c.urgent) && !c.done && <span className="live-dot" aria-hidden="true" />}
                           {c.done ? '—' : c.label}
                         </p>
                         <p className="text-[10px] text-muted mt-0.5">{e.attendance ? 'Hadir dicatat' : 'Belum absen'}</p>
@@ -108,7 +109,7 @@ export default function PlayerDashboard() {
               Assigned VOD Action Items
             </SectionTitle>
             {actionItems.length === 0 ? <Empty title="Tidak ada tugas aktif" /> : (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {actionItems.map((a: any) => {
                   const next = nextAction(a.status);
                   return (
@@ -149,7 +150,7 @@ export default function PlayerDashboard() {
               Playbook Belum Dibaca
             </SectionTitle>
             {unreadPlaybooks.length === 0 ? <Empty title="Semua playbook siap" /> : (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {unreadPlaybooks.slice(0, 5).map((p: any) => (
                   <Link key={p.id} to={`/player/playbooks/${p.id}`}
                     className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-line hover:border-sage/40 transition-colors">

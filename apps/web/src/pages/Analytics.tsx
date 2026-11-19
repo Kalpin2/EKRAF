@@ -45,7 +45,7 @@ export default function Analytics() {
         }
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Rata-rata ACS" value={avgAcs} icon={TrendingUp} tone="cyan" />
         <StatCard label="Rata-rata K/D" value={avgKd} icon={Gauge} tone="green" />
         <StatCard label="Scorecard Coach" value={avgScore} hint="Skala 1–5" icon={Target} tone="violet" />
@@ -78,8 +78,8 @@ export default function Analytics() {
                   {patchDates.map((p) => (
                     <ReferenceLine key={p.patch} x={p.label} yAxisId="right" stroke="var(--accent-secondary)" strokeDasharray="3 3" label={{ value: `Patch ${p.patch}`, fill: 'var(--accent-secondary)', fontSize: 9, position: 'insideTopLeft' }} />
                   ))}
-                  <Line yAxisId="left" type="monotone" dataKey="acs" name="ACS" stroke="var(--accent-primary)" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
-                  <Line yAxisId="right" type="monotone" dataKey="scorecardAvg" name="Scorecard" stroke="var(--accent-secondary)" strokeWidth={2} dot={{ r: 2 }} />
+                  <Line yAxisId="left" type="monotone" dataKey="acs" name="ACS" stroke="var(--accent-primary)" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} animationDuration={420} animationEasing="ease-out" />
+                  <Line yAxisId="right" type="monotone" dataKey="scorecardAvg" name="Scorecard" stroke="var(--accent-secondary)" strokeWidth={2} dot={{ r: 2 }} animationDuration={420} animationEasing="ease-out" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -95,7 +95,7 @@ export default function Analytics() {
                   <XAxis dataKey="label" stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 8, fontSize: 12 }} />
-                  <Bar dataKey="kd" name="K/D" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="kd" name="K/D" radius={[4, 4, 0, 0]} animationDuration={420} animationEasing="ease-out">
                     {chartData.slice(-14).map((d, i) => <Cell key={i} fill={d.result === 'WIN' ? 'var(--semantic-win)' : 'var(--semantic-loss)'} />)}
                   </Bar>
                 </BarChart>

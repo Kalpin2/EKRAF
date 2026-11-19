@@ -19,7 +19,7 @@ export default function Audit() {
     <>
       <PageHeader title="Security Audit Log" subtitle="Catatan permanen atas seluruh aktivitas sensitif" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Total Aktivitas" value={logs?.length || 0} icon={ScrollText} tone="cyan" />
         <StatCard label="Akses Playbook" value={(logs || []).filter((l) => l.actionType?.startsWith('PLAYBOOK')).length} icon={ShieldCheck} tone="violet" />
         <StatCard label="Perubahan Akses" value={(logs || []).filter((l) => l.actionType?.includes('ROLE') || l.actionType?.includes('ACCESS')).length} icon={Fingerprint} tone="red" />

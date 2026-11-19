@@ -49,7 +49,7 @@ export default function Roster() {
         actions={<button className="btn-primary" onClick={() => setShowAdd(true)}><UserPlus size={16} /> Tambah Anggota</button>}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         {[
           ['Starting', counts.starting, 'green'], ['Substitute', counts.sub, 'cyan'],
           ['Bench', counts.bench, 'amber'], ['Trial', counts.trial, 'violet'],

@@ -24,7 +24,7 @@ export default function PlayerWellness() {
     <>
       <PageHeader title="Daily Wellness & Condition Log" subtitle="Check-in cepat < 30 detik • pantau pola kelelahan menjelang turnamen" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Tidur (rata-rata)" value={`${avg('sleepHours')}/10`} icon={Moon} tone="cyan" />
         <StatCard label="Burnout Index" value={`${avg('fatigueLevel')}/10`} icon={HeartPulse} tone={Number(avg('fatigueLevel')) >= 7 ? 'red' : 'green'} />
         <StatCard label="Kesiapan Mental" value={`${avg('mentalReadiness')}/10`} icon={Brain} tone="violet" />
@@ -49,9 +49,9 @@ export default function PlayerWellness() {
                   <Legend wrapperStyle={{ fontSize: 11, color: 'var(--text-secondary)' }} />
                   <ReferenceLine y={7} stroke="var(--semantic-win)" strokeDasharray="4 4" label={{ value: 'Target ≥7 (tidur/mental)', fill: 'var(--semantic-win)', fontSize: 9, position: 'insideTopRight' }} />
                   <ReferenceLine y={8} stroke="var(--semantic-loss)" strokeDasharray="2 4" label={{ value: 'Risiko burnout (fatigue ≥8)', fill: 'var(--semantic-loss)', fontSize: 9, position: 'insideBottomRight' }} />
-                  <Line type="monotone" dataKey="sleepHours" name="Tidur" stroke="var(--accent-primary)" strokeWidth={2} dot={{ r: 2 }} />
-                  <Line type="monotone" dataKey="mentalReadiness" name="Mental" stroke="var(--semantic-win)" strokeWidth={2} dot={{ r: 2 }} />
-                  <Line type="monotone" dataKey="fatigueLevel" name="Kelelahan" stroke="var(--semantic-loss)" strokeWidth={2} dot={{ r: 2 }} />
+                  <Line type="monotone" dataKey="sleepHours" name="Tidur" stroke="var(--accent-primary)" strokeWidth={2} dot={{ r: 2 }} animationDuration={420} animationEasing="ease-out" />
+                  <Line type="monotone" dataKey="mentalReadiness" name="Mental" stroke="var(--semantic-win)" strokeWidth={2} dot={{ r: 2 }} animationDuration={420} animationEasing="ease-out" />
+                  <Line type="monotone" dataKey="fatigueLevel" name="Kelelahan" stroke="var(--semantic-loss)" strokeWidth={2} dot={{ r: 2 }} animationDuration={420} animationEasing="ease-out" />
                 </LineChart>
               </ResponsiveContainer>
             </div>

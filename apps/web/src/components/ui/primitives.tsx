@@ -170,7 +170,7 @@ export function TableBody({ className, ...props }: React.HTMLAttributes<HTMLTabl
   return <tbody data-slot="table-body" className={cn('[&_tr:last-child]:border-0', className)} {...props} />;
 }
 export function TableRow({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) {
-  return <tr data-slot="table-row" className={cn('border-b border-border/60 transition-colors hover:bg-muted-bg/50', className)} {...props} />;
+  return <tr data-slot="table-row" className={cn('tactical-row border-b border-border/60 transition-colors duration-150 hover:bg-muted-bg/50', className)} {...props} />;
 }
 export function TableHead({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) {
   return <th data-slot="table-head" className={cn('h-9 px-3 text-left align-middle text-[11px] font-medium uppercase tracking-wider text-muted-foreground', className)} {...props} />;

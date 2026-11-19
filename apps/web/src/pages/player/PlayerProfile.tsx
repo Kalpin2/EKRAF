@@ -130,7 +130,7 @@ export default function PlayerProfile() {
           <Card>
             <SectionTitle right={<Badge tone="green"><ShieldCheck size={10} /> Device Binding</Badge>}>Perangkat Terdaftar</SectionTitle>
             {!data.devices?.length ? <Empty title="Belum ada perangkat" /> : (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {data.devices.map((d: any) => (
                   <div key={d.id} className={`rounded-lg border p-3 ${d.revokedAt ? 'border-defeat/30 bg-defeat/5' : 'border-line bg-canvas/40'}`}>
                     <div className="flex items-start justify-between gap-2">

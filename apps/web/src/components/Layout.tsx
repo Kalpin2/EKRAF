@@ -13,6 +13,7 @@ import { timeAgo } from '../lib/format';
 import { useMatchday } from '../lib/matchday';
 import { Breadcrumbs } from './Breadcrumbs';
 import { ThemeToggle } from './ThemeToggle';
+import { AmbientTactical } from './AmbientTactical';
 
 type NavItem = { path: string; label: string; icon: React.ElementType; roles: string[] };
 type NavGroup = { label: string; items: NavItem[] };
@@ -130,15 +131,18 @@ export default function Layout() {
               <div key={group.label}>
                 {!collapsed && <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted/60">{group.label}</p>}
                 <div className="space-y-1">
-                  {group.items.map((item) => (
+                  {group.items.map((item) => {
+                    const active = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+                    return (
                     <NavLink
                       key={item.path}
                       to={item.path}
                       title={collapsed ? item.label : undefined}
-                      className={({ isActive }) => cn(
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                      data-active={active}
+                      className={cn(
+                        'tactical-indicator flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150',
                         collapsed && 'justify-center',
-                        isActive || location.pathname.startsWith(item.path + '/')
+                        active
                           ? 'bg-sage/10 text-sage border border-sage/20'
                           : 'text-muted hover:bg-elevated hover:text-crisp border border-transparent',
                       )}
@@ -146,7 +150,8 @@ export default function Layout() {
                       <item.icon size={17} className="shrink-0" />
                       {!collapsed && <span className="truncate">{item.label}</span>}
                     </NavLink>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -184,8 +189,9 @@ export default function Layout() {
 
       <div className={cn('transition-all duration-200', !matchday && (collapsed ? 'lg:pl-12' : 'lg:pl-64'))}>
         <header className="h-14 sticky top-0 z-30 bg-background/90 backdrop-blur border-b border-border flex items-center gap-2 sm:gap-3 px-3 md:px-4 overflow-hidden">
-          {!matchday && <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Buka menu"><Menu size={20} /></Button>}
-          <div className="flex-1 min-w-0">
+          <AmbientTactical />
+          {!matchday && <Button variant="ghost" size="icon" className="lg:hidden relative z-10" onClick={() => setOpen(true)} aria-label="Buka menu"><Menu size={20} /></Button>}
+          <div className="flex-1 min-w-0 relative z-10">
             {!matchday && <Breadcrumbs />}
             <h2 className="heading text-sm truncate mt-0.5" title={isPlayer ? 'Player Workspace' : 'Nexus Esports / Valorant Division'}>
               {matchday ? 'MATCHDAY COMMAND' : heading}

@@ -30,7 +30,7 @@ export default function Wellness() {
     <>
       <PageHeader title="Wellness & Condition Log" subtitle="Check-in harian < 30 detik untuk menjaga kesiapan pemain" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Rata-rata Tidur" value={`${avg('sleepHours')} jam`} icon={Moon} tone="cyan" />
         <StatCard label="Rata-rata Kelelahan" value={`${avg('fatigueLevel')}/5`} icon={HeartPulse} tone="amber" />
         <StatCard label="Kesiapan Mental" value={`${avg('mentalReadiness')}/5`} icon={Brain} tone="green" />

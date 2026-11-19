@@ -76,7 +76,7 @@ export default function Schedule() {
                 <div className="h-px bg-grid flex-1" />
                 <Badge tone="neutral">{items.length} sesi</Badge>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {items.map((ev: any) => (
                   <Card key={ev.id} hover className="flex items-center gap-4 py-4">
                     <div className={`w-1 h-12 rounded-full shrink-0 ${ev.type === 'TOURNAMENT' ? 'bg-defeat' : ev.type === 'SCRIM' ? 'bg-clay' : 'bg-sage'}`} />
@@ -149,7 +149,7 @@ export default function Schedule() {
       </Modal>
 
       <Modal open={!!attendanceEvent} onClose={() => setAttendanceEvent(null)} title={`Absensi — ${attendanceEvent?.title || ''}`} wide>
-        <div className="space-y-2">
+        <div className="space-y-2 stagger-grid">
           {players.map((p: any) => (
             <div key={p.userId} className="flex items-center justify-between py-2 border-b border-line/60 last:border-0">
               <div><p className="text-sm font-semibold">{p.user.ign}</p><p className="text-xs text-muted">{p.user.fullName}</p></div>

@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 import { demoCredentials } from '../lib/mock';
 import { Input } from '../components/ui';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { AmbientTactical } from '../components/AmbientTactical';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,9 +36,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen grid-bg flex items-stretch">
+    <div className="min-h-screen grid-bg flex items-stretch relative">
+      <AmbientTactical />
       {/* Brand panel */}
-      <div className="hidden lg:flex w-1/2 relative overflow-hidden border-r border-border bg-card/40 flex-col justify-between p-12">
+      <div className="hidden lg:flex w-1/2 relative z-10 overflow-hidden border-r border-border bg-card/40 flex-col justify-between p-12">
         <div className="absolute inset-0 opacity-30 pointer-events-none">
           <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full border border-primary/20" />
           <div className="absolute top-32 left-32 w-64 h-64 rounded-full border border-accent/20" />
@@ -80,7 +82,7 @@ export default function Login() {
       </div>
 
       {/* Form panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-8 min-w-0">
+      <div className="w-full lg:w-1/2 relative z-10 flex items-center justify-center p-5 sm:p-8 min-w-0">
         <div className="w-full max-w-md">
           <div className="flex justify-end mb-4"><ThemeToggle compact /></div>
           <div className="lg:hidden flex items-center gap-3 mb-10">

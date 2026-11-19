@@ -53,7 +53,7 @@ export default function Recruitment() {
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted">{stage.label}</p>
                 <Badge tone={stage.tone as any}>{items.length}</Badge>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {items.map((r) => (
                   <div key={r.id} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', r.id)} className="card p-3 cursor-grab active:cursor-grabbing card-hover">
                     <div className="flex items-start justify-between mb-2">

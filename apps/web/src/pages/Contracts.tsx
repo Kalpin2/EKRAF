@@ -39,7 +39,7 @@ export default function Contracts() {
     <>
       <PageHeader title="Kontrak & Finance" subtitle="Siklus kontrak, brankas dokumen legal, dan kalkulator prize pool" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Kontrak Aktif" value={(contracts || []).filter((c) => c.status === 'ACTIVE').length} icon={FileLock2} tone="green" />
         <StatCard label="Akan Berakhir ≤90 Hari" value={expiring.length} icon={CalendarClock} tone="amber" />
         <StatCard label="Masa Trial" value={(contracts || []).filter((c) => c.status === 'TRIAL').length} icon={ShieldAlert} tone="violet" />
@@ -101,7 +101,7 @@ export default function Contracts() {
           </SectionTitle>
           <p className="text-xs text-muted mb-4">Seluruh dokumen dienkripsi sebelum disimpan. Setiap pembukaan/unduhan dicatat permanen di audit log.</p>
           {docs.length === 0 ? <Empty title="Belum ada dokumen" description="Unggah KTP, Paspor, Visa, NPWP, atau kontrak pemain." /> : (
-            <div className="space-y-2">
+            <div className="space-y-2 stagger-grid">
               {docs.map((d) => (
                 <div key={d.id} className="flex items-center justify-between py-3 border-b border-line/60 last:border-0">
                   <div className="flex items-center gap-3">

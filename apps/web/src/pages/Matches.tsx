@@ -52,7 +52,7 @@ export default function Matches() {
         actions={<button className="btn-primary" onClick={() => setShowAdd(true)}><Plus size={16} /> Catat Pertandingan</button>}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Total Match" value={matches?.length || 0} icon={Swords} tone="cyan" />
         <StatCard label="Kemenangan" value={wins} icon={Trophy} tone="green" />
         <StatCard label="Win Rate" value={`${winRate}%`} icon={Trophy} tone="violet" />
@@ -67,7 +67,7 @@ export default function Matches() {
         </div>
         {filtered.length === 0 ? <Empty title="Belum ada pertandingan" /> : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm stagger-table">
               <thead><tr className="text-left text-[11px] uppercase tracking-wider text-muted border-b border-line">
                 <th className="py-3 font-medium">Lawan</th><th className="py-3 font-medium">Tipe</th><th className="py-3 font-medium">Map</th>
                 <th className="py-3 font-medium">Patch</th><th className="py-3 font-medium">Skor</th><th className="py-3 font-medium">Hasil</th>
@@ -158,7 +158,7 @@ export default function Matches() {
             <div>
               <SectionTitle>Statistik Pemain</SectionTitle>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm stagger-table">
                   <thead><tr className="text-left text-[11px] uppercase text-muted border-b border-line">
                     <th className="py-2">Pemain</th><th className="py-2">Agent</th><th className="py-2 num">K</th><th className="py-2 num">D</th><th className="py-2 num">A</th><th className="py-2 num">ACS</th><th className="py-2 num">KD</th>
                   </tr></thead>

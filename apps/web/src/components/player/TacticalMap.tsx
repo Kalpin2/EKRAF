@@ -16,7 +16,7 @@ export default function TacticalMap({ data, className }: { data: any; className?
         <path d="M44 30 L56 30 M30 45 L30 58 M66 46 L66 58 M62 78 L66 78" stroke="var(--accent-primary)" strokeWidth="0.4" strokeDasharray="2 2" opacity="0.45" />
         {paths.map((p: any, i: number) => (
           <line key={i} x1={p.from.x} y1={p.from.y} x2={p.to.x} y2={p.to.y}
-            stroke={p.color || 'var(--accent-secondary)'} strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#player-arrow)" />
+            className="tactical-flow" stroke={p.color || 'var(--accent-secondary)'} strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#player-arrow)" />
         ))}
         <defs>
           <marker id="player-arrow" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">

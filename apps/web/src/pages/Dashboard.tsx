@@ -44,7 +44,7 @@ export default function Dashboard() {
       />
 
       {/* Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Total Pertandingan" value={summary.totalMatches} hint="Scrim + turnamen tercatat" icon={Swords} tone="cyan" />
         <StatCard label="Win Rate" value={`${summary.winRate}%`} hint="14 pertandingan terakhir" icon={Trophy} tone="green" />
         <StatCard label="Pemain Aktif" value={summary.activePlayers} hint="Starting + substitute" icon={Users} tone="violet" />
@@ -95,7 +95,7 @@ export default function Dashboard() {
           <SectionTitle right={<Link to="/schedule" className="text-xs text-sage flex items-center gap-1">Buka kalender <ArrowUpRight size={12} /></Link>}>
             Jadwal Mendatang
           </SectionTitle>
-          <div className="space-y-1">
+          <div className="space-y-1 stagger-grid">
             {widgets.events?.slice(0, 5).map((ev: any) => (
               <div key={ev.id} className="flex items-center gap-4 py-2.5 border-b border-line/60 last:border-0">
                 <div className="w-14 text-center shrink-0">
@@ -171,7 +171,7 @@ export default function Dashboard() {
             Pertandingan Terakhir
           </SectionTitle>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm stagger-table">
               <thead>
                 <tr className="text-left text-[11px] uppercase tracking-wider text-muted border-b border-line">
                   <th className="py-2 font-medium">Lawan</th><th className="py-2 font-medium">Map</th>

@@ -33,7 +33,7 @@ export default function PlayerSchedule() {
         }
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Sesi Ditampilkan" value={events.length} icon={CalendarDays} tone="cyan" />
         <StatCard label="Skor Disiplin" value={`${data?.discipline || 0}%`} icon={ShieldCheck} tone={(data?.discipline || 0) >= 85 ? 'green' : 'amber'} />
         <StatCard label="Tepat Waktu" value={counts.ON_TIME || 0} icon={CheckCircle2} tone="green" />
@@ -65,7 +65,10 @@ export default function PlayerSchedule() {
                         <p className="text-[11px] text-muted mt-0.5 flex items-center gap-1"><Timer size={11} /> {tz}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className={`num text-xs font-bold ${c.urgent ? 'text-defeat pulse-soft' : 'text-sage'}`}>{c.done ? 'Selesai' : c.label}</p>
+                        <p className={`num text-xs font-bold flex items-center justify-end gap-1.5 ${c.urgent ? 'text-defeat pulse-soft' : 'text-sage'}`}>
+                          {(c.live || c.urgent) && !c.done && <span className="live-dot" aria-hidden="true" />}
+                          {c.done ? 'Selesai' : c.label}
+                        </p>
                         <p className="text-[10px] text-muted mt-0.5">{fmtDate(e.startsAt, 'dd MMM')}</p>
                       </div>
                     </div>
@@ -90,7 +93,7 @@ export default function PlayerSchedule() {
                 <p className="text-xs text-muted">Dihitung dari ketepatan waktu seluruh sesi.</p>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 stagger-grid">
               {['ON_TIME', 'LATE', 'EXCUSED', 'SICK', 'ABSENT'].map((k) => (
                 <div key={k} className="flex items-center justify-between">
                   <span className="text-xs text-muted">{ATTENDANCE_LABELS[k]}</span>

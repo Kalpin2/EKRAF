@@ -58,7 +58,7 @@ export default function PlayerPerformance() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+          <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
             <StatCard label="Total Sesi" value={perf?.total || 0} icon={Activity} tone="cyan" />
             <StatCard label="Rata-rata ACS" value={avgAcs} icon={TrendingUp} tone="green" />
             <StatCard label="Rata-rata K/D" value={avgKd} icon={Gauge} tone="violet" />
@@ -85,8 +85,8 @@ export default function PlayerPerformance() {
                         return <ReferenceLine key={p} x={first?.label} yAxisId="right" stroke="var(--accent-secondary)" strokeDasharray="3 3"
                           label={{ value: `Patch ${p}`, fill: 'var(--accent-secondary)', fontSize: 9, position: 'insideTopLeft' }} />;
                       })}
-                      <Line yAxisId="left" type="monotone" dataKey="acs" name="ACS" stroke="var(--accent-primary)" strokeWidth={2} dot={{ r: 2 }} />
-                      <Line yAxisId="right" type="monotone" dataKey="scorecardAvg" name="Scorecard" stroke="var(--accent-secondary)" strokeWidth={2} dot={{ r: 2 }} />
+                      <Line yAxisId="left" type="monotone" dataKey="acs" name="ACS" stroke="var(--accent-primary)" strokeWidth={2} dot={{ r: 2 }} animationDuration={420} animationEasing="ease-out" />
+                      <Line yAxisId="right" type="monotone" dataKey="scorecardAvg" name="Scorecard" stroke="var(--accent-secondary)" strokeWidth={2} dot={{ r: 2 }} animationDuration={420} animationEasing="ease-out" />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -157,7 +157,7 @@ export default function PlayerPerformance() {
                     </div>
                     <Badge tone={s.average >= 4.5 ? 'green' : s.average >= 3.5 ? 'cyan' : 'amber'}><span className="num">{s.average}</span>/5</Badge>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 stagger-grid">
                     {SCORE_FIELDS.map(([key, label]) => (
                       <div key={key} className="flex items-center gap-3">
                         <span className="text-[11px] text-muted w-28 shrink-0">{label}</span>
@@ -178,7 +178,7 @@ export default function PlayerPerformance() {
           <Card>
             <SectionTitle right={<Badge tone="violet"><Radio size={10} /> Timestamped</Badge>}>Catatan VOD Review</SectionTitle>
             {!actions?.vodNotes?.length ? <Empty title="Belum ada catatan VOD" /> : (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {actions.vodNotes.map((n: any) => (
                   <div key={n.id} className="rounded-lg border border-line bg-canvas/50 p-3">
                     <span className="num text-sm font-bold text-sage">{n.mmss || mmss(n.timestampSeconds)}</span>
@@ -192,7 +192,7 @@ export default function PlayerPerformance() {
           <Card>
             <SectionTitle right={<Badge tone="amber">{actions?.actions?.filter((a: any) => a.status !== 'DONE').length || 0} aktif</Badge>}>Action Items Saya</SectionTitle>
             {!actions?.actions?.length ? <Empty title="Tidak ada action item" /> : (
-              <div className="space-y-2">
+              <div className="space-y-2 stagger-grid">
                 {actions.actions.map((a: any) => {
                   const next = nextAction(a.status);
                   return (

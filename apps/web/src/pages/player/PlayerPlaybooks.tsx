@@ -52,7 +52,7 @@ export default function PlayerPlaybooks() {
         }
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid stagger-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Total Playbook" value={data?.length || 0} icon={Crosshair} tone="cyan" />
         <StatCard label="Siap Dieksekusi" value={ackCount} icon={CheckCircle2} tone="green" />
         <StatCard label="Belum Dibaca" value={(data || []).filter((p: any) => p.myStatus === 'UNREAD').length} icon={AlertTriangle} tone="red" />
@@ -99,7 +99,7 @@ export default function PlayerPlaybooks() {
         {isLoading ? <Loading /> : rows.length === 0 ? <Empty title="Tidak ada playbook" description="Coba ubah filter." /> : (
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
             {rows.map((p: any) => (
-              <div key={p.id} className="rounded-xl border border-line bg-canvas/40 p-4 hover:border-sage/40 transition-colors">
+              <div key={p.id} className="rounded-xl border border-line bg-canvas/40 p-4 transition-[transform,border-color] duration-150 hover:-translate-y-0.5 hover:border-sage/50">
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-muted">{p.mapName}</p>
